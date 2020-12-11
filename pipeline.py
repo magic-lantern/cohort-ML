@@ -31,12 +31,15 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
 
     print(label, '------------------------------------')
     # summarize the selection of the attributes
-    try:
+    if hasattr(estimator, 'feature_importances_'):
         importances = estimator.feature_importances_
         indices = np.argsort(importances)[::-1]
-    except AttributeError:
+    elif hasattr(estimator, 'coef_'):
         importances = abs(estimator.coef_[0])
         indices = np.argsort(importances)[::-1]
+    else
+        importances = []
+        indices = []
     arr = []
     for f in range(x_train.shape[1]):
         print("%2d) %-*s %f" % (f + 1, 40, 
@@ -131,7 +134,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # Logistic Regression
     # best featrues from grid search {'C': 1.0, 'penalty': 'l1', 'solver': 'liblinear'}
-    #                                {'C': 0.0001, 'penalty': 'l2', 'solver': 'liblinear'}
     # parameters = {
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
@@ -139,8 +141,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # }
     #########################
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l2',
-                            C=0.0001,
+    lr = LogisticRegression(penalty='l1',
+                            C=1.0,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
