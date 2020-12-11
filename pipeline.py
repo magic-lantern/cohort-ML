@@ -53,7 +53,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     y_pred = estimator.predict_proba(x_test)[:, 1]
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     print('------------------------------------')
-    return pd.DataFrame(columns=['feature', 'importance'], data=arr)
+    return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.e4922e37-cdb5-4f8b-ae2a-bb41c11dcada"),
@@ -138,7 +138,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression w/L1 penalty', datadict=data_std, features=my_data_std.columns)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
