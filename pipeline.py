@@ -183,5 +183,5 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     # plt.show()
 
-    return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1))
+    return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
