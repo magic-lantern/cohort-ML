@@ -52,6 +52,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     print('Recall:', recall_score(y_test, y_pred))
     y_pred = estimator.predict_proba(x_test)[:, 1]
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
+    plot_roc_curve(estimator, x_test, y_test, ax=ax)
     print('------------------------------------')
     return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
 
@@ -103,8 +104,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
-    plot_roc_curve(rf, data_enc['x_test'], data_enc['y_test'], ax=ax)
+    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)  
 
@@ -124,14 +124,14 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   booster='gbtree',
                                   learning_rate=0.01,
                                   n_estimators=1250)
-    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
-    #plot_roc_curve(xgb, data_enc['x_test'], data_enc['y_test'], ax=ax)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
     #########################
     # Logistic Regression
     # best featrues from grid search {'C': 1.0, 'penalty': 'l1', 'solver': 'liblinear'}
+    #                                {'C': 0.0001, 'penalty': 'l2', 'solver': 'liblinear'}
     # parameters = {
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
@@ -144,8 +144,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns)
-    plot_roc_curve(lr, data_std['x_test'], data_std['y_test'], ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -165,8 +164,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               kernel='rbf',
               gamma='auto',
               C=1.0)
-    svm_features = fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns)
-    plot_roc_curve(svm, data_std['x_test'], data_std['y_test'], ax=ax)
+    svm_features = fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
