@@ -87,6 +87,12 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # Random Forest
     # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 750}
+    # parameters = {
+    #    'n_estimators':[100,250,500,750,1000,1250],
+    #    'criterion': ['gini', 'entropy'],
+    #    'min_samples_split': [2, 5, 10, 20],
+    #    'max_features' : ['sqrt', 'log2']
+    # }
     #########################
     start = timeit.default_timer()
     rf = RandomForestClassifier(n_estimators=750,
@@ -101,6 +107,11 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # XGBoost 
     # best features from grid search {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1250}
+    # parameters = {
+    #    'n_estimators': [50,100,250,500,750,1000,1250],
+    #    'learning_rate': [0.005, 0.01, 0.03, 0.06, 1],
+    #    'booster': ['gbtree', 'gblinear', 'dart']
+    # }
     #########################
     start = timeit.default_timer()
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
@@ -115,19 +126,19 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     #########################
     # Logistic Regression
-    # best featrues from grid search {'C': 0.01, 'penalty': 'l2', 'solver': 'liblinear'}
+    # best featrues from grid search {'C': 1.0, 'penalty': 'l1', 'solver': 'liblinear'}
     # parameters = {
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
     #}
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l2',
-                            C=0.01,
+    lr = LogisticRegression(penalty='l1',
+                            C=1.0,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    fit_and_report(estimator=lr, label='LogisticRegression w/L2 penalty', datadict=data_std, features=my_data_std.columns)
+    fit_and_report(estimator=lr, label='LogisticRegression w/L1 penalty', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
