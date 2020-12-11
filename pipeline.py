@@ -22,7 +22,7 @@ import xgboost as xgb
 # set standard random state for repeatability
 my_random_state = 42
 
-def fit_and_report(estimator=None, label='', datadict={}, features=[]):
+def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
     x_test = datadict['x_test']
     y_test = datadict['y_test']
     x_train = datadict['x_train']
