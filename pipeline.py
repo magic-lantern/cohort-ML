@@ -139,8 +139,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # }
     #########################
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l1',
-                            C=1.0,
+    lr = LogisticRegression(penalty='l2',
+                            C=0.0001,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
@@ -164,7 +164,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               kernel='rbf',
               gamma='auto',
               C=1.0)
-    svm_features = fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
