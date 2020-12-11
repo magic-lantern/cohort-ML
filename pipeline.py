@@ -46,6 +46,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     print('Recall:', recall_score(y_test, y_pred))
     y_pred = estimator.predict_proba(x_test)[:, 1]
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
+    print('------------------------------------')
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.e4922e37-cdb5-4f8b-ae2a-bb41c11dcada"),
@@ -79,17 +80,21 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # Random Forest
     # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 750}
     #########################
+    start = timeit.default_timer()
     rf = RandomForestClassifier(n_estimators=750,
                                 min_samples_split=5,
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
     fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)  
 
     #########################
     # XGBoost 
     # best features from grid search {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1250}
     #########################
+    start = timeit.default_timer()
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
@@ -97,6 +102,19 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   learning_rate=0.01,
                                   n_estimators=1250)
     fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start) 
+
+    #########################
+    # Logistic Regression
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='l2',
+                            C=100.0,
+                            random_state=my_random_state,
+                            max_iter=10000)
+    fit_and_report(estimator=lr, label='LogisticRegression w/L2 penalty', datadict=data_std, features=my_data_std.columns)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     # fig, (ax1, ax2) = plt.subplots(2, figsize=(12,10))
     # fig.tight_layout(h_pad=4)
