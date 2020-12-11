@@ -28,18 +28,19 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     y_train = datadict['y_train']
     estimator.fit(x_train, y_train)
 
-    # summarize the selection of the attributes
-    importances = estimator.feature_importances_
-    indices = np.argsort(importances)[::-1]
-
     print(label, '------------------------------------')
     # summarize the selection of the attributes
-    if hasattr(estimator, 'feature_importances_'):
+    try:
         importances = estimator.feature_importances_
         indices = np.argsort(importances)[::-1]
-    else:
+    except AttributeError:
         importances = abs(estimator.coef_[0])
         indices = np.argsort(importances)[::-1]
+
+    for f in range(x_train.shape[1]):
+        print("%2d) %-*s %f" % (f + 1, 30, 
+                                features[indices[f]], 
+                                importances[indices[f]]))
 
     for f in range(x_train.shape[1]):
         print("%2d) %-*s %f" % (f + 1, 40, 
@@ -131,7 +132,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
-    #}
+    # }
+    #########################
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
                             C=1.0,
@@ -150,6 +152,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #    'gamma': ['scale', 'auto', 0.1, 0.2, 1.0, 10.0],
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
     # }
+    #########################
     start = timeit.default_timer()
     svm = SVC(random_state=my_random_state,
               probability=True,
