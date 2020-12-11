@@ -37,11 +37,12 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     except AttributeError:
         importances = abs(estimator.coef_[0])
         indices = np.argsort(importances)[::-1]
-
+    arr = []
     for f in range(x_train.shape[1]):
         print("%2d) %-*s %f" % (f + 1, 40, 
                                 features[indices[f]], 
                                 importances[indices[f]]))
+        arr.append([features[indices[f]], importances[indices[f]]])
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
@@ -52,6 +53,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     y_pred = estimator.predict_proba(x_test)[:, 1]
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     print('------------------------------------')
+    return pd.DataFrame(columns=['feature', 'importance'], data=arr)
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.e4922e37-cdb5-4f8b-ae2a-bb41c11dcada"),
@@ -83,7 +85,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     #########################
     # Random Forest
-    # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 750}
+    # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 500}
     # parameters = {
     #    'n_estimators':[100,250,500,750,1000,1250],
     #    'criterion': ['gini', 'entropy'],
@@ -97,7 +99,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
+    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)  
 
@@ -117,7 +119,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   booster='gbtree',
                                   learning_rate=0.01,
                                   n_estimators=1250)
-    fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
@@ -136,7 +138,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    fit_and_report(estimator=lr, label='LogisticRegression w/L1 penalty', datadict=data_std, features=my_data_std.columns)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression w/L1 penalty', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -156,7 +158,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               kernel='rbf',
               gamma='auto',
               C=1.0)
-    fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns)
+    svm_features = fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -180,4 +182,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # plt.subplots_adjust(bottom=0.2)
 
     # plt.show()
+
+    return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1))
 
