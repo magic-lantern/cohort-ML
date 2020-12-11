@@ -93,9 +93,9 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
-                                  booster: 'gbtree',
-                                  learning_rate: 0.01,
-                                  n_estimators: 1250)
+                                  booster='gbtree',
+                                  learning_rate=0.01,
+                                  n_estimators=1250)
     fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
 
     # fig, (ax1, ax2) = plt.subplots(2, figsize=(12,10))
