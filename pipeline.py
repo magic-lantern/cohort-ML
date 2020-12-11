@@ -32,6 +32,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
     importances = estimator.feature_importances_
     indices = np.argsort(importances)[::-1]
 
+    print(label, '------------------------------------')
     for f in range(x_train.shape[1]):
         print("%2d) %-*s %f" % (f + 1, 30, 
                                 features[indices[f]], 
@@ -39,7 +40,6 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
-    print(label)
     print(confmat)
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
     print('Precision:', precision_score(y_test, y_pred))
