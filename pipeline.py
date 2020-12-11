@@ -37,7 +37,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
     elif hasattr(estimator, 'coef_'):
         importances = abs(estimator.coef_[0])
         indices = np.argsort(importances)[::-1]
-    else
+    else:
         importances = []
         indices = []
     arr = []
