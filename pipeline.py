@@ -185,7 +185,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     inpatient_scaled_w_imputation=Input(rid="ri.foundry.main.dataset.f410db35-59e0-4b82-8fa8-d6dc6a61c9f2"),
     outcomes=Input(rid="ri.foundry.main.dataset.3d9b1654-3923-484f-8db5-6b38b56e290c")
 )
-def generate_models_and_summary_info_1(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation):
+def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation):
     # this set is for tree based methods that do not need/require scaling of the input data
     # categoricals have been one-hot encoded, imputation done, but no scaling
     data_and_outcomes = data_encoded_and_outcomes
@@ -225,7 +225,7 @@ def generate_models_and_summary_info_1(data_scaled_and_outcomes, inpatient_scale
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)  
 
@@ -245,7 +245,7 @@ def generate_models_and_summary_info_1(data_scaled_and_outcomes, inpatient_scale
                                   random_state=my_random_state,
                                   booster='gbtree',
                                   learning_rate=0.01,
-                                  n_estimators=1250)
+                                  n_estimators=1000)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
@@ -265,7 +265,7 @@ def generate_models_and_summary_info_1(data_scaled_and_outcomes, inpatient_scale
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
+    #lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -285,7 +285,7 @@ def generate_models_and_summary_info_1(data_scaled_and_outcomes, inpatient_scale
               kernel='rbf',
               gamma='auto',
               C=1.0)
-    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+    #svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
