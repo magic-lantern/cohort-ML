@@ -84,7 +84,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=df.columns)
+    fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
 
     # fig, (ax1, ax2) = plt.subplots(2, figsize=(12,10))
     # fig.tight_layout(h_pad=4)
