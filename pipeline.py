@@ -40,12 +40,14 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
     else:
         importances = []
         indices = []
+    
     arr = []
-    for f in range(x_train.shape[1]):
-        print("%2d) %-*s %f" % (f + 1, 40, 
-                                features[indices[f]], 
-                                importances[indices[f]]))
-        arr.append([features[indices[f]], importances[indices[f]]])
+    if len(importances) > 0:
+        for f in range(x_train.shape[1]):
+            print("%2d) %-*s %f" % (f + 1, 40, 
+                                    features[indices[f]], 
+                                    importances[indices[f]]))
+            arr.append([features[indices[f]], importances[indices[f]]])
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
