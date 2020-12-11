@@ -125,7 +125,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   learning_rate=0.01,
                                   n_estimators=1250)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
-    plot_roc_curve(xgb, data_enc['x_test'], data_enc['y_test'], ax=ax)
+    #plot_roc_curve(xgb, data_enc['x_test'], data_enc['y_test'], ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
