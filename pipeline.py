@@ -116,11 +116,16 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # Logistic Regression
     # best featrues from grid search {'C': 0.01, 'penalty': 'l2', 'solver': 'liblinear'}
+    # parameters = {
+    #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
+    #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+    #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
+    #}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l2',
                             C=0.01,
                             random_state=my_random_state,
-                            solver='liblinear'
+                            solver='liblinear',
                             max_iter=10000)
     fit_and_report(estimator=lr, label='LogisticRegression w/L2 penalty', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
