@@ -63,7 +63,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     my_data_enc = my_data_enc.drop(columns='visit_occurrence_id')
     my_outcomes = data_and_outcomes.select(outcomes.columns).toPandas()
     y = my_outcomes.bad_outcome
-    x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data, y, test_size=0.3, random_state=my_random_state, stratify=y)
+    x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
     data_enc = {'x_train': x_train_enc, 'x_test': x_test_enc, 'y_train': y_train, 'y_test': y_test}
 
     # this version has alredy had StandardScaler applied to the data
@@ -72,7 +72,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     my_data_std = data_and_outcomes.select(inpatient_scaled_w_imputation.columns).toPandas()
     my_data_std = my_data_std.drop(columns='visit_occurrence_id')
     # y is just a binary outcome, so overwriting from previous train_test_split is ok
-    x_train_std, x_test_std, y_train, y_test = train_test_split(my_data, y, test_size=0.3, random_state=my_random_state, stratify=y)
+    x_train_std, x_test_std, y_train, y_test = train_test_split(my_data_std, y, test_size=0.3, random_state=my_random_state, stratify=y)
     data_std = {'x_train': x_train_std, 'x_test': x_test_std, 'y_train': y_train, 'y_test': y_test}
 
     #########################
