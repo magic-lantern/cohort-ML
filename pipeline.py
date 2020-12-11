@@ -98,7 +98,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # }
     #########################
     start = timeit.default_timer()
-    rf = RandomForestClassifier(n_estimators=750,
+    rf = RandomForestClassifier(n_estimators=250,
                                 min_samples_split=5,
                                 random_state=my_random_state,
                                 max_features='sqrt',
