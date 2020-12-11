@@ -38,11 +38,6 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
         indices = np.argsort(importances)[::-1]
 
     for f in range(x_train.shape[1]):
-        print("%2d) %-*s %f" % (f + 1, 30, 
-                                features[indices[f]], 
-                                importances[indices[f]]))
-
-    for f in range(x_train.shape[1]):
         print("%2d) %-*s %f" % (f + 1, 40, 
                                 features[indices[f]], 
                                 importances[indices[f]]))
