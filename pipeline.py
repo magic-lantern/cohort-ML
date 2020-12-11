@@ -34,10 +34,10 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[]):
 
     print(label, '------------------------------------')
     # summarize the selection of the attributes
-    try:
+    if hasattr(estimator, 'feature_importances_'):
         importances = estimator.feature_importances_
         indices = np.argsort(importances)[::-1]
-    except AttributeError:
+    else:
         importances = abs(estimator.coef_[0])
         indices = np.argsort(importances)[::-1]
 
@@ -139,6 +139,25 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             solver='liblinear',
                             max_iter=10000)
     fit_and_report(estimator=lr, label='LogisticRegression w/L1 penalty', datadict=data_std, features=my_data_std.columns)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    #########################
+    # Support Vector Machine
+    # best featrues from grid search 
+    # parameters = {
+    #    'kernel':['linear', 'poly', 'rbf', 'sigmoid'],
+    #    'gamma': ['scale', 'auto', 0.1, 0.2, 1.0, 10.0],
+    #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
+    # }
+    start = timeit.default_timer()
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='auto',
+              C=1.0)
+    fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
