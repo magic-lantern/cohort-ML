@@ -89,6 +89,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # Random Forest
     # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 500}
+    #                                 {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 250}
     # parameters = {
     #    'n_estimators':[100,250,500,750,1000,1250],
     #    'criterion': ['gini', 'entropy'],
@@ -103,7 +104,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                 max_features='sqrt',
                                 criterion='gini')
     rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns)
-    plot_roc_curve(rf, my_data_enc['x_test'], my_data_enc['y_test'], ax=ax)
+    plot_roc_curve(rf, data_enc['x_test'], data_enc['y_test'], ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)  
 
@@ -124,7 +125,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   learning_rate=0.01,
                                   n_estimators=1250)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns)
-    plot_roc_curve(xgb, my_data_enc['x_test'], my_data_enc['y_test'], ax=ax)
+    plot_roc_curve(xgb, data_enc['x_test'], data_enc['y_test'], ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
@@ -144,7 +145,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             solver='liblinear',
                             max_iter=10000)
     lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns)
-    plot_roc_curve(lr, my_data_std['x_test'], my_data_std['y_test'], ax=ax)
+    plot_roc_curve(lr, data_std['x_test'], data_std['y_test'], ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -165,7 +166,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               gamma='auto',
               C=1.0)
     svm_features = fit_and_report(estimator=lr, label='SVM', datadict=data_std, features=my_data_std.columns)
-    plot_roc_curve(svm, my_data_std['x_test'], my_data_std['y_test'], ax=ax)
+    plot_roc_curve(svm, data_std['x_test'], data_std['y_test'], ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -188,7 +189,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     # plt.subplots_adjust(bottom=0.2)
 
-    # plt.show()
+    plt.show()
 
     return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
