@@ -116,7 +116,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # XGBoost 
     # best features from grid search {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1250}
-    #                                {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1000}
     # parameters = {
     #    'n_estimators': [50,100,250,500,750,1000,1250],
     #    'learning_rate': [0.005, 0.01, 0.03, 0.06, 1],
@@ -155,7 +154,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     #########################
     # Support Vector Machine
-    # best featrues from grid search 
+    # best featrues from grid search ?
     # parameters = {
     #    'kernel':['linear', 'poly', 'rbf', 'sigmoid'],
     #    'gamma': ['scale', 'auto', 0.1, 0.2, 1.0, 10.0],
@@ -167,7 +166,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               probability=True,
               cache_size=1600,
               kernel='rbf',
-              gamma='auto',
+              gamma='scale',
               C=1.0)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
