@@ -116,6 +116,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # XGBoost 
     # best features from grid search {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1250}
+    #                                {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1000}
     # parameters = {
     #    'n_estimators': [50,100,250,500,750,1000,1250],
     #    'learning_rate': [0.005, 0.01, 0.03, 0.06, 1],
@@ -244,7 +245,8 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   random_state=my_random_state,
                                   booster='gbtree',
                                   learning_rate=0.01,
-                                  n_estimators=1000)
+                                  n_estimators=1000,
+                                  objective = 'binary:logistic')
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
