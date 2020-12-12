@@ -246,7 +246,8 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   booster='gbtree',
                                   learning_rate=0.01,
                                   n_estimators=1000,
-                                  objective = 'binary:logistic')
+                                  #objective = 'binary:logistic'
+                                  objective = 'binary:hinge')
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
@@ -292,5 +293,5 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
 
     plt.show()
 
-    return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
+    return #pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
