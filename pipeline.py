@@ -51,17 +51,17 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
-    arr.append(['Confusion Matrix', str(confmat)])
+    # arr.append(['Confusion Matrix', str(confmat)])
     print(confmat)
-    arr.append(['Balanced Accuracy', str(balanced_accuracy_score(y_test, y_pred))])
+    arr.append(['Balanced Accuracy', balanced_accuracy_score(y_test, y_pred)])
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
-    arr.append(['Precision', str(precision_score(y_test, y_pred))])
+    arr.append(['Precision', precision_score(y_test, y_pred)])
     print('Precision:', precision_score(y_test, y_pred))
-    arr.append(['Recall', str(recall_score(y_test, y_pred))])
+    arr.append(['Recall', recall_score(y_test, y_pred)])
     print('Recall:', recall_score(y_test, y_pred))
     if (not skip_predict_proba):
         y_pred = estimator.predict_proba(x_test)[:, 1]
-        arr.append(['ROC_AUC_SCORE', str(roc_auc_score(y_true=y_test, y_score=y_pred))])
+        arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
         print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
