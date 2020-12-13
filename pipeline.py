@@ -135,7 +135,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   random_state=my_random_state,
                                   booster='gbtree',
                                   learning_rate=0.01,
-                                  n_estimators=1250)
+                                  n_estimators=1000)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
@@ -234,7 +234,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
 @transform_pandas(
-    Output(rid="ri.vector.main.execute.874e0c00-eb1e-49df-a1e7-31693b62f3b5"),
+    Output(rid="ri.foundry.main.dataset.feb3b029-23d6-45ea-90ee-cf5a0e9af33a"),
     data_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.32069249-a675-4faf-9d3c-a68ff0670c07"),
     data_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.b474df3d-909d-4a81-9e38-515e22b9cff3"),
     inpatient_encoded_w_imputation=Input(rid="ri.foundry.main.dataset.d3578a81-014a-49a6-9887-53d296155bdd"),
