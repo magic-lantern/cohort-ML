@@ -170,17 +170,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
-    # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
-    start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l1',
-                            random_state=my_random_state,
-                            C=0.5,
-                            solver='saga',
-                            max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
-
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l2',
