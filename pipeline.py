@@ -160,6 +160,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     print('Time: ', stop - start)
 
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
+    # penalty none ignores C and l1 ratio params, so not much to config here
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='none',
                             random_state=my_random_state,
@@ -314,7 +315,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   n_estimators=1000,
                                   #objective = 'binary:logistic'
                                   objective = 'binary:hinge')
-    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
@@ -327,13 +328,14 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
     # }
     #########################
+    # {'C': 0.25, 'penalty': 'l1', 'solver': 'liblinear'}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
-                            C=1.0,
+                            C=0.25,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    #lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
