@@ -59,7 +59,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     print('Precision:', precision_score(y_test, y_pred))
     arr.append(['Recall', recall_score(y_test, y_pred)])
     print('Recall:', recall_score(y_test, y_pred))
-    if (! skip_predict_proba):
+    if (not skip_predict_proba):
         y_pred = estimator.predict_proba(x_test)[:, 1]
         arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
         print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
