@@ -321,7 +321,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     #{'C': 0.25, 'l1_ratio': 0.9, 'penalty': 'elasticnet', 'solver': 'saga'}
     lr = LogisticRegression(penalty='elasticnet',
                             C=0.25,
-                            l1_ratio=0.9
+                            l1_ratio=0.9,
                             random_state=my_random_state,
                             solver='saga',
                             max_iter=10000)
