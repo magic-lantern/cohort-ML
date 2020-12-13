@@ -324,6 +324,10 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     #ROC_AUC_SCORE:  0.8306548029875954
     #
     # {'C': 0.17, 'penalty': 'l1', 'solver': 'liblinear'}
+    #Balanced Accuracy: 0.63913284918218
+    #Precision: 0.6729490022172949
+    #Recall: 0.3163105784262637
+    #ROC_AUC_SCORE:  0.830544385771811
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
                             C=0.17,
