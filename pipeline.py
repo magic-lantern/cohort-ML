@@ -51,7 +51,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
-    arr.append(['Confusion Matrix', confmat])
+    arr.append(['Confusion Matrix', str(confmat)])
     print(confmat)
     arr.append(['Balanced Accuracy', balanced_accuracy_score(y_test, y_pred)])
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
@@ -160,6 +160,23 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
     # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
+    # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+
+    #########################
+    # Ridge Classification
+    # best features from grid search {'alpha': 0.7, 'solver': 'sparse_cg'}
+    # parameters = {
+    #    'solver': ['svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga'],
+    #    'alpha': [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    # }
+    start = timeit.default_timer()
+    rc = RidgeClassifier(random_state=my_random_state,
+                         alpha=0.7,
+                         solver='sparse_cg',
+                         class_weight='balanced')
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     #########################
     # Support Vector Machine
