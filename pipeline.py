@@ -51,11 +51,16 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
 
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    arr.append('Confusion Matrix', confmat)
     print(confmat)
+    arr.append('Balanced Accuracy', balanced_accuracy_score(y_test, y_pred))
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
+    arr.append('Precision', precision_score(y_test, y_pred))
     print('Precision:', precision_score(y_test, y_pred))
+    arr.append('Recall', recall_score(y_test, y_pred))
     print('Recall:', recall_score(y_test, y_pred))
     y_pred = estimator.predict_proba(x_test)[:, 1]
+    arr.append('ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred))
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
@@ -152,6 +157,9 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
+
+    # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
+    # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
 
     #########################
     # Support Vector Machine
