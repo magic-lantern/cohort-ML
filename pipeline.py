@@ -9,7 +9,7 @@ from sklearn.feature_selection import RFE, RFECV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -161,6 +161,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
     # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+    # LR elasticnet 
+    #       'l1_ratio': [0.0, 0.1, 0.2, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 1.0]
 
     #########################
     # Ridge Classification
