@@ -57,7 +57,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
     print('Recall:', recall_score(y_test, y_pred))
     y_pred = estimator.predict_proba(x_test)[:, 1]
     print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
-    plot_roc_curve(estimator, x_test, y_test, ax=ax)
+    plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
     return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
 
@@ -149,7 +149,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
