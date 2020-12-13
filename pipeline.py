@@ -142,8 +142,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     #########################
     # Logistic Regression
-    # best featrues from grid search {'C': 1.0, 'penalty': 'l1', 'solver': 'liblinear'}
-    # ? better {'C': 0.25, 'penalty': 'l1', 'solver': 'liblinear'}
+    # best features from grid search {'C': 0.25, 'penalty': 'l1', 'solver': 'liblinear'}
     # parameters = {
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
@@ -152,7 +151,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
-                            C=1.0,
+                            C=0.25,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
@@ -172,7 +171,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     print('Time: ', stop - start)
 
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
-    #        {'C': 1.17, 'penalty': 'l2', 'solver': 'newton-cg'}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l2',
                             random_state=my_random_state,
