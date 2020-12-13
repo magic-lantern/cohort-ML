@@ -296,15 +296,34 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     # }
     #########################
     start = timeit.default_timer()
+    #{'booster': 'gbtree', 'learning_rate': 0.016, 'n_estimators': 750}
+    xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
+                                  use_label_encoder=False,
+                                  random_state=my_random_state,
+                                  booster='gbtree',
+                                  learning_rate=0.016,
+                                  n_estimators=750
+                                  #objective = 'binary:logistic'
+                                  #objective = 'binary:hinge'
+                                  )
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_016', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
                                   booster='gbtree',
                                   learning_rate=0.01,
-                                  n_estimators=1000,
+                                  n_estimators=1000
                                   #objective = 'binary:logistic'
-                                  objective = 'binary:hinge')
-    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+                                  #objective = 'binary:hinge'
+                                  )
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_01', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
+                                  use_label_encoder=False,
+                                  random_state=my_random_state,
+                                  booster='gbtree',
+                                  learning_rate=0.01,
+                                  n_estimators=1250)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1250', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
@@ -325,7 +344,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                             random_state=my_random_state,
                             solver='saga',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_l2_17', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='elastic', datadict=data_std, features=my_data_std.columns, ax=ax)
 
     #########################
     # Support Vector Machine
