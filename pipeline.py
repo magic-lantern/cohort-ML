@@ -22,7 +22,7 @@ import xgboost as xgb
 # set standard random state for repeatability
 my_random_state = 42
 
-def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
+def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, skip_predict_proba=False):
     x_test = datadict['x_test']
     y_test = datadict['y_test']
     x_train = datadict['x_train']
@@ -59,9 +59,10 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None):
     print('Precision:', precision_score(y_test, y_pred))
     arr.append(['Recall', recall_score(y_test, y_pred)])
     print('Recall:', recall_score(y_test, y_pred))
-    y_pred = estimator.predict_proba(x_test)[:, 1]
-    arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
-    print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
+    if (! skip_predict_proba):
+        y_pred = estimator.predict_proba(x_test)[:, 1]
+        arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
+        print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
     return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
@@ -161,7 +162,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
     # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
-    # LR elasticnet 
+    # LR elasticnet {'l1_ratio': 0.45, 'penalty': 'elasticnet', 'solver': 'saga'}
     #       'l1_ratio': [0.0, 0.1, 0.2, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 1.0]
 
     #########################
@@ -176,7 +177,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                          alpha=0.7,
                          solver='sparse_cg',
                          class_weight='balanced')
-    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, ax=ax)
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, ax=ax, skip_predict_proba=True)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
