@@ -143,6 +143,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #########################
     # Logistic Regression
     # best featrues from grid search {'C': 1.0, 'penalty': 'l1', 'solver': 'liblinear'}
+    # ? better {'C': 0.25, 'penalty': 'l1', 'solver': 'liblinear'}
     # parameters = {
     #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
     #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
@@ -171,6 +172,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     print('Time: ', stop - start)
 
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+    #        {'C': 1.17, 'penalty': 'l2', 'solver': 'newton-cg'}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l2',
                             random_state=my_random_state,
@@ -328,13 +330,38 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     #Precision: 0.6729490022172949
     #Recall: 0.3163105784262637
     #ROC_AUC_SCORE:  0.830544385771811
+    #
+    # compare l2
+    # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+    #        {'C': 1.17, 'penalty': 'l2', 'solver': 'newton-cg'}
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
                             C=0.17,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_l1_17', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr = LogisticRegression(penalty='l1',
+                            C=0.25,
+                            random_state=my_random_state,
+                            solver='liblinear',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_l1_25', datadict=data_std, features=my_data_std.columns, ax=ax)
+
+        # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+    #        {'C': 1.17, 'penalty': 'l2', 'solver': 'newton-cg'}
+    lr = LogisticRegression(penalty='l2',
+                            C=0.25,
+                            random_state=my_random_state,
+                            solver='liblinear',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_l2_25', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr = LogisticRegression(penalty='l2',
+                            C=0.17,
+                            random_state=my_random_state,
+                            solver='newton-cg',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_l2_17', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
