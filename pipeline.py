@@ -160,10 +160,48 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     print('Time: ', stop - start)
 
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='none',
+                            random_state=my_random_state,
+                            solver='newton-cg',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
     # LR L1: {'C': 0.5, 'penalty': 'l1', 'solver': 'saga'}
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='l1',
+                            random_state=my_random_state,
+                            C=0.5,
+                            solver='saga',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
     # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='l2',
+                            random_state=my_random_state,
+                            C=0.25,
+                            solver='liblinear',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
     # LR elasticnet {'l1_ratio': 0.45, 'penalty': 'elasticnet', 'solver': 'saga'}
     #       'l1_ratio': [0.0, 0.1, 0.2, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 1.0]
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='elasticnet',
+                            random_state=my_random_state,
+                            l1_ratio=0.45,
+                            solver='saga',
+                            max_iter=10000)
+    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_Elasticnet', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     #########################
     # Ridge Classification
