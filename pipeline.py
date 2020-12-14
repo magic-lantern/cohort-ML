@@ -375,7 +375,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     return #pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
 @transform_pandas(
-    Output(rid="ri.vector.main.execute.3349863e-2eff-4e4c-914c-1ded66d22d1d"),
+    Output(rid="ri.foundry.main.dataset.9fc2194e-3755-4323-9c5b-5df31e745c58"),
     data_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.32069249-a675-4faf-9d3c-a68ff0670c07"),
     data_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.b474df3d-909d-4a81-9e38-515e22b9cff3"),
     inpatient_encoded_w_imputation=Input(rid="ri.foundry.main.dataset.d3578a81-014a-49a6-9887-53d296155bdd"),
@@ -422,7 +422,7 @@ def testing_1(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_enco
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -434,7 +434,7 @@ def testing_1(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_enco
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='entropy')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest_new', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #rf_features = fit_and_report(estimator=rf, label='RandomForest_new', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -509,7 +509,50 @@ def testing_1(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_enco
     # }
     #########################
 
-    plt.show()
+    start = timeit.default_timer()
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='auto',
+              C=1.0)
+    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='auto',
+              C=0.6)
+    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_0.6', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='scale',
+              C=1.0)
+    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
+    #{'C': 1.4, 'gamma': 'scale', 'kernel': 'linear'}
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='linear',
+              gamma='scale',
+              C=1.4)
+    svm_features = fit_and_report(estimator=svm, label='SVM_line_scale_1.4', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     return #pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
 
