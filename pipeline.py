@@ -107,7 +107,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # categoricals have been one-hot encoded, imputation done, but no scaling
     data_and_outcomes = data_encoded_and_outcomes
     my_data_enc = data_and_outcomes.select(inpatient_encoded_w_imputation.columns).toPandas()
-    my_data_enc = my_data_enc.drop(columns='visit_occurrence_id')
     my_outcomes = data_and_outcomes.select(outcomes.columns).toPandas()
     # this version has alredy had StandardScaler applied to the data
     # after one-hot encoding, imputation
@@ -118,6 +117,9 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     y = my_outcomes.bad_outcome
     # split dataset
     x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
+
+    # drop column to match x_ arrays
+    my_data_enc = my_data_enc.drop(columns='visit_occurrence_id')
 
     x_train_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)]
     x_test_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
