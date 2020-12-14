@@ -364,24 +364,36 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='auto',
               C=1.0,
-              max_iter=5000)
+              max_iter=10000)
     svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
     svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='rbf',
               gamma='auto',
               C=0.6,
-              max_iter=5000)
+              max_iter=10000)
     svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_0.6', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
     svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='rbf',
               gamma='scale',
               C=1.0,
-              max_iter=5000)
+              max_iter=10000)
     svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
     #{'C': 1.4, 'gamma': 'scale', 'kernel': 'linear'}
     svm = SVC(random_state=my_random_state,
               probability=True,
@@ -389,7 +401,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='linear',
               gamma='scale',
               C=1.4,
-              max_iter=5000)
+              max_iter=10000)
     svm_features = fit_and_report(estimator=svm, label='SVM_line_scale_1.4', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
