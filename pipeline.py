@@ -370,7 +370,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='auto',
               C=0.6)
-        svm = SVC(random_state=my_random_state,
+    svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='rbf',
