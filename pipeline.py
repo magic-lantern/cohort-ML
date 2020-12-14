@@ -23,14 +23,14 @@ import xgboost as xgb
 my_random_state = 42
 
 def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, skip_predict_proba=False):
-    x_test = datadict['x_test']
-    y_test = datadict['y_test']
-    x_train = datadict['x_train']
-    y_train = datadict['y_train']
-    mar_x_test = datadict['mar_x_test']
-    mar_y_test = datadict['mar_y_test']
-    jun_x_test = datadict['jun_x_test']
-    jun_y_test = datadict['jun_y_test']
+    x_test = datadict.get('x_test')
+    y_test = datadict.get('y_test')
+    x_train = datadict.get('x_train')
+    y_train = datadict.get('y_train')
+    mar_x_test = datadict.get('mar_x_test')
+    mar_y_test = datadict.get('mar_y_test')
+    jun_x_test = datadict.get('jun_x_test')
+    jun_y_test = datadict.get('jun_y_test')
 
     estimator.fit(x_train, y_train)
 
