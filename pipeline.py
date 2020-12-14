@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn.cluster as cluster
-from sklearn.metrics import confusion_matrix, plot_roc_curve, roc_auc_score, roc_curve, auc, accuracy_score, balanced_accuracy_score, precision_score, recall_score
+from sklearn.metrics import confusion_matrix, plot_roc_curve, roc_auc_score, roc_curve, auc, accuracy_score, balanced_accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split, GridSearchCV, KFold
 from sklearn.feature_selection import RFE, RFECV
 from sklearn.pipeline import Pipeline
@@ -59,6 +59,8 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     print('Precision:', precision_score(y_test, y_pred))
     arr.append(['Recall', recall_score(y_test, y_pred)])
     print('Recall:', recall_score(y_test, y_pred))
+    arr.append(['F1', f1_score(y_test, y_pred)])
+    print('F1:', f1_score(y_test, y_pred))
     if (not skip_predict_proba):
         y_pred = estimator.predict_proba(x_test)[:, 1]
         arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
@@ -74,27 +76,75 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     data_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.b474df3d-909d-4a81-9e38-515e22b9cff3"),
     inpatient_encoded_w_imputation=Input(rid="ri.foundry.main.dataset.d3578a81-014a-49a6-9887-53d296155bdd"),
     inpatient_scaled_w_imputation=Input(rid="ri.foundry.main.dataset.f410db35-59e0-4b82-8fa8-d6dc6a61c9f2"),
+    jun_to_oct_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.b260be3e-e48d-4428-9a44-e4ceb10113e5"),
+    jun_to_oct_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.bab694df-4318-4c0e-aa36-b0f4296c6360"),
+    mar_to_may_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.fd6475f7-d8dc-4601-a3ce-0e7e3d166da3"),
+    mar_to_may_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.c0fd81e6-dc02-45b9-93fe-b0047394e4f8"),
     outcomes=Input(rid="ri.foundry.main.dataset.3d9b1654-3923-484f-8db5-6b38b56e290c")
 )
-def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation):
+def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation, mar_to_may_scaled_and_outcomes, jun_to_oct_scaled_and_outcomes, jun_to_oct_encoded_and_outcomes, mar_to_may_encoded_and_outcomes):
     # this set is for tree based methods that do not need/require scaling of the input data
     # categoricals have been one-hot encoded, imputation done, but no scaling
     data_and_outcomes = data_encoded_and_outcomes
     my_data_enc = data_and_outcomes.select(inpatient_encoded_w_imputation.columns).toPandas()
-    my_data_enc = my_data_enc.drop(columns='visit_occurrence_id')
     my_outcomes = data_and_outcomes.select(outcomes.columns).toPandas()
-    y = my_outcomes.bad_outcome
-    x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
-    data_enc = {'x_train': x_train_enc, 'x_test': x_test_enc, 'y_train': y_train, 'y_test': y_test}
-
     # this version has alredy had StandardScaler applied to the data
     # after one-hot encoding, imputation
     data_and_outcomes_std = data_scaled_and_outcomes
     my_data_std = data_and_outcomes.select(inpatient_scaled_w_imputation.columns).toPandas()
-    my_data_std = my_data_std.drop(columns='visit_occurrence_id')
-    # y is just a binary outcome, so overwriting from previous train_test_split is ok
-    x_train_std, x_test_std, y_train, y_test = train_test_split(my_data_std, y, test_size=0.3, random_state=my_random_state, stratify=y)
-    data_std = {'x_train': x_train_std, 'x_test': x_test_std, 'y_train': y_train, 'y_test': y_test}
+    # outcome
+    y = my_outcomes.bad_outcome
+    # split dataset
+    x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
+
+    x_train_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)]
+    x_test_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
+
+    # figure out what from seasonal dataset are part of test
+    mar_x_test_enc = mar_to_may_encoded_and_outcomes.toPandas()
+    mar_x_test_enc = mar_x_test_enc[mar_x_test_enc.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
+    jun_x_test_enc = jun_to_oct_encoded_and_outcomes.toPandas()
+    jun_x_test_enc = jun_x_test_enc[jun_x_test_enc.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
+
+    # drop visit_occurrence_id from x_ datasets
+    x_train_enc = x_train_enc.drop(columns='visit_occurrence_id')
+    x_test_enc = x_test_enc.drop(columns='visit_occurrence_id')
+    mar_y_test_enc = mar_x_test_enc.bad_outcome
+    mar_x_test_enc = mar_x_test_enc[x_test_enc.columns]
+    jun_y_test_enc = jun_x_test_enc.bad_outcome
+    jun_x_test_enc = jun_x_test_enc[x_test_enc.columns]
+
+    data_enc = {'x_train': x_train_enc,
+                'x_test': x_test_enc,
+                'y_train': y_train,
+                'y_test': y_test,
+                'mar_x_test' : mar_x_test_enc,
+                'mar_y_test': mar_y_test_enc,
+                'jun_x_test' : jun_x_test_enc,
+                'jun_y_test': jun_y_test_enc}
+
+    # figure out what from seasonal dataset are part of test data that has been standardized
+    mar_x_test_std = mar_to_may_scaled_and_outcomes.toPandas()
+    mar_x_test_std = mar_x_test_std[mar_x_test_std.visit_occurrence_id.isin(x_test_std.visit_occurrence_id)]
+    jun_x_test_std = jun_to_oct_scaled_and_outcomes.toPandas()
+    jun_x_test_std = jun_x_test_std[jun_x_test_std.visit_occurrence_id.isin(x_test_std.visit_occurrence_id)]
+
+    # drop visit_occurrence_id from x_ datasets
+    x_train_std = x_train_std.drop(columns='visit_occurrence_id')
+    x_test_std = x_test_std.drop(columns='visit_occurrence_id')
+    mar_y_test_std = mar_x_test_std.bad_outcome
+    mar_x_test_std = mar_x_test_std[x_test_std.columns]
+    jun_y_test_std = jun_x_test_std.bad_outcome
+    jun_x_test_std = jun_x_test_std[x_test_std.columns]
+
+    data_std = {'x_train': x_train_std,
+                'x_test': x_test_std,
+                'y_train': y_train,
+                'y_test': y_test,
+                'mar_x_test' : mar_x_test_std,
+                'mar_y_test': mar_y_test_std,
+                'jun_x_test' : jun_x_test_std,
+                'jun_y_test': jun_y_test_std}
 
     # Axis to combine plots
     ax = plt.gca()
@@ -127,16 +177,16 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # parameters = {
     #    'n_estimators':[100,250,500,750,1000,1250],
     #    'criterion': ['gini', 'entropy'],
-    #    'min_samples_split': [2, 5, 10, 20],
+    #    'min_samples_split': range(2, 21),
     #    'max_features' : ['sqrt', 'log2']
     # }
     #########################
     start = timeit.default_timer()
-    rf = RandomForestClassifier(n_estimators=250,
-                                min_samples_split=5,
+    rf = RandomForestClassifier(n_estimators=750,
+                                min_samples_split=9,
                                 random_state=my_random_state,
                                 max_features='sqrt',
-                                criterion='gini')
+                                criterion='entropy')
     rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
@@ -225,9 +275,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               cache_size=1600,
               kernel='rbf',
               gamma='scale',
-              C=1.0,
-              max_iter=3000)
-    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+              C=1.0)
+    #svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
