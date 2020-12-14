@@ -345,7 +345,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -357,7 +357,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='entropy')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest_new', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #rf_features = fit_and_report(estimator=rf, label='RandomForest_new', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -377,29 +377,18 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   use_label_encoder=False,
                                   random_state=my_random_state,
                                   booster='gbtree',
-                                  learning_rate=0.016,
-                                  n_estimators=750
-                                  #objective = 'binary:logistic'
-                                  #objective = 'binary:hinge'
-                                  )
-    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_016', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+                                  learning_rate=0.01,
+                                  n_estimators=1000)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1000', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    # {'booster': 'gbtree', 'learning_rate': 0.0385, 'n_estimators': 500}
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
                                   booster='gbtree',
-                                  learning_rate=0.01,
-                                  n_estimators=1000
-                                  #objective = 'binary:logistic'
-                                  #objective = 'binary:hinge'
+                                  learning_rate=0.0385,
+                                  n_estimators=500
                                   )
-    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_01', datadict=data_enc, features=my_data_enc.columns, ax=ax)
-    xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
-                                  use_label_encoder=False,
-                                  random_state=my_random_state,
-                                  booster='gbtree',
-                                  learning_rate=0.01,
-                                  n_estimators=1250)
-    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1250', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_500', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
