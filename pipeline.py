@@ -27,6 +27,11 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     y_test = datadict['y_test']
     x_train = datadict['x_train']
     y_train = datadict['y_train']
+    mar_x_test = datadict['mar_x_test']
+    mar_y_test = datadict['mar_y_test']
+    jun_x_test = datadict['jun_x_test']
+    jun_y_test = datadict['jun_y_test']
+
     estimator.fit(x_train, y_train)
 
     print(label, '------------------------------------')
@@ -50,8 +55,8 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
             arr.append([features[indices[f]], importances[indices[f]]])
 
     arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba)
-    arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Mar_to_May')
-    arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct')
+    arr = arr + model_metrics(estimator, mar_x_test, mar_y_test, skip_predict_proba=skip_predict_proba, label='_Mar_to_May')
+    arr = arr + model_metrics(estimator, jun_x_test, jun_y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct')
 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
@@ -67,7 +72,7 @@ def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=F
     
     y_pred = estimator.predict(x_test)
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
-    arr.append(['Confusion Matrix' + label, confmat.tostring()])
+    #arr.append(['Confusion Matrix' + label, confmat.tostring()])
     print(confmat)
     arr.append(['Balanced Accuracy' + label, balanced_accuracy_score(y_test, y_pred)])
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
