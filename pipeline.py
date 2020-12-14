@@ -384,7 +384,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   booster='gbtree',
                                   learning_rate=0.01,
                                   n_estimators=1000)
-    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1000', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1000', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     # {'booster': 'gbtree', 'learning_rate': 0.0385, 'n_estimators': 500}
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
@@ -393,7 +393,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   learning_rate=0.0385,
                                   n_estimators=500
                                   )
-    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_500', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_500', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start) 
 
@@ -408,13 +408,13 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     
 
     #{'C': 0.25, 'l1_ratio': 0.9, 'penalty': 'elasticnet', 'solver': 'saga'}
-    lr = LogisticRegression(penalty='elasticnet',
-                            C=0.25,
-                            l1_ratio=0.9,
+    lr = LogisticRegression(penalty='none',
+                            #C=0.25,
+                            #l1_ratio=0.9,
                             random_state=my_random_state,
-                            solver='saga',
+                            solver='sag',
                             max_iter=10000)
-    #lr_features = fit_and_report(estimator=lr, label='elastic', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_features = fit_and_report(estimator=lr, label='elastic', datadict=data_std, features=my_data_std.columns, ax=ax)
 
     #########################
     # Support Vector Machine
