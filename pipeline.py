@@ -326,7 +326,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     # this version has alredy had StandardScaler applied to the data
     # after one-hot encoding, imputation
     data_and_outcomes_std = data_scaled_and_outcomes
-    my_data_std = data_and_outcomes.select(inpatient_scaled_w_imputation.columns).toPandas()
+    my_data_std = data_and_outcomes_std.select(inpatient_scaled_w_imputation.columns).toPandas()
     my_data_std = my_data_std.drop(columns='visit_occurrence_id')
     # y is just a binary outcome, so overwriting from previous train_test_split is ok
     x_train_std, x_test_std, y_train, y_test = train_test_split(my_data_std, y, test_size=0.3, random_state=my_random_state, stratify=y)
