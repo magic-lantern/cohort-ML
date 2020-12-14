@@ -100,27 +100,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     ax = plt.gca()
 
     #########################
-    # Random Forest
-    # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 500}
-    #                                 {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 250}
-    # parameters = {
-    #    'n_estimators':[100,250,500,750,1000,1250],
-    #    'criterion': ['gini', 'entropy'],
-    #    'min_samples_split': [2, 5, 10, 20],
-    #    'max_features' : ['sqrt', 'log2']
-    # }
-    #########################
-    start = timeit.default_timer()
-    rf = RandomForestClassifier(n_estimators=250,
-                                min_samples_split=5,
-                                random_state=my_random_state,
-                                max_features='sqrt',
-                                criterion='gini')
-    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)  
-
-    #########################
     # XGBoost 
     # best features from grid search {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1250}
     #                                {'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1000}
@@ -139,7 +118,28 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   n_estimators=1000)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
-    print('Time: ', stop - start) 
+    print('Time: ', stop - start)
+
+    #########################
+    # Random Forest
+    # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 500}
+    #                                 {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 250}
+    # parameters = {
+    #    'n_estimators':[100,250,500,750,1000,1250],
+    #    'criterion': ['gini', 'entropy'],
+    #    'min_samples_split': [2, 5, 10, 20],
+    #    'max_features' : ['sqrt', 'log2']
+    # }
+    #########################
+    start = timeit.default_timer()
+    rf = RandomForestClassifier(n_estimators=250,
+                                min_samples_split=5,
+                                random_state=my_random_state,
+                                max_features='sqrt',
+                                criterion='gini')
+    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     #########################
     # Logistic Regression
