@@ -49,9 +49,9 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
                                     importances[indices[f]]))
             arr.append([features[indices[f]], importances[indices[f]]])
 
-    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba))
-    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Mar_to_May'))
-    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct'))
+    arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba)
+    arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Mar_to_May')
+    arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct')
 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
