@@ -376,6 +376,13 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='scale',
               C=1.0)
+    #{'C': 1.4, 'gamma': 'scale', 'kernel': 'linear'}
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='linear',
+              gamma='scale',
+              C=1.4)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
