@@ -174,6 +174,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # parameters = {
     #    'n_estimators': [50,100,250,500,750,1000,1250],
     #    'learning_rate': [0.005, 0.01, 0.03, 0.06, 1],
+    #    # after finding 0.01 was best, tried 'learning_rate': np.arange(0.001, 0.2 , 0.0025)
     #    'booster': ['gbtree', 'gblinear', 'dart']
     # }
     #########################
@@ -182,16 +183,15 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                                   use_label_encoder=False,
                                   random_state=my_random_state,
                                   booster='gbtree',
-                                  learning_rate=0.01,
-                                  n_estimators=1000)
+                                  learning_rate=0.0385,
+                                  n_estimators=500)
     xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
     #########################
     # Random Forest
-    # best features from grid search: {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 500}
-    #                                 {'criterion': 'gini', 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 250}
+    # best features from grid search: {'criterion': 'entropy', 'max_features': 'sqrt', 'min_samples_split': 9, 'n_estimators': 750}
     # parameters = {
     #    'n_estimators':[100,250,500,750,1000,1250],
     #    'criterion': ['gini', 'entropy'],
