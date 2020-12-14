@@ -150,16 +150,6 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
     # }
     #########################
-    start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l1',
-                            C=0.25,
-                            random_state=my_random_state,
-                            solver='liblinear',
-                            max_iter=10000)
-    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
-
     # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
     # penalty none ignores C and l1 ratio params, so not much to config here
     start = timeit.default_timer()
@@ -168,6 +158,16 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             solver='newton-cg',
                             max_iter=10000)
     lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    start = timeit.default_timer()
+    lr = LogisticRegression(penalty='l1',
+                            C=0.25,
+                            random_state=my_random_state,
+                            solver='liblinear',
+                            max_iter=10000)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
