@@ -362,27 +362,31 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               cache_size=1600,
               kernel='rbf',
               gamma='auto',
-              C=1.0)
+              C=1.0,
+              max_iter=3000)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='rbf',
               gamma='auto',
-              C=0.6)
+              C=0.6,
+              max_iter=3000)
     svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='rbf',
               gamma='scale',
-              C=1.0)
+              C=1.0,
+              max_iter=3000)
     #{'C': 1.4, 'gamma': 'scale', 'kernel': 'linear'}
     svm = SVC(random_state=my_random_state,
               probability=True,
               cache_size=1600,
               kernel='linear',
               gamma='scale',
-              C=1.4)
+              C=1.4,
+              max_iter=3000)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
