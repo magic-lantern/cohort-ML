@@ -63,7 +63,8 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
         y_pred = estimator.predict_proba(x_test)[:, 1]
         arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
         print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
-    plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
+    if ax is not None:
+        plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
     return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
 
@@ -155,7 +156,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -166,7 +167,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='newton-cg',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -177,7 +178,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             C=0.25,
                             solver='liblinear',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -189,7 +190,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             l1_ratio=0.45,
                             solver='saga',
                             max_iter=10000)
-    lr_features = fit_and_report(estimator=lr, label='LogisticRegression_Elasticnet', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_elastic_features = fit_and_report(estimator=lr, label='LogisticRegression_Elasticnet', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -205,7 +206,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                          alpha=0.7,
                          solver='sparse_cg',
                          class_weight='balanced')
-    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, ax=ax, skip_predict_proba=True)
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -231,7 +232,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     plt.show()
 
-    return pd.concat([rf_features, xgb_features, lr_features, svm_features], axis=1)
+    return pd.concat([rf_features, xgb_features, svm_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features], axis=1)
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.feb3b029-23d6-45ea-90ee-cf5a0e9af33a"),
