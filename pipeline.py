@@ -307,7 +307,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                   #objective = 'binary:logistic'
                                   #objective = 'binary:hinge'
                                   )
-    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_016', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    #xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_016', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     xgb_model = xgb.XGBClassifier(n_jobs=4, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
@@ -370,6 +370,12 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='auto',
               C=0.6)
+        svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='scale',
+              C=1.0)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
