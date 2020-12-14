@@ -283,9 +283,21 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
                                 random_state=my_random_state,
                                 max_features='sqrt',
                                 criterion='gini')
-    #rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    rf_features = fit_and_report(estimator=rf, label='RandomForest', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
-    print('Time: ', stop - start)  
+    print('Time: ', stop - start)
+
+    
+    # {'criterion': 'entropy', 'max_features': 'sqrt', 'min_samples_split': 9, 'n_estimators': 750}
+    start = timeit.default_timer()
+    rf = RandomForestClassifier(n_estimators=750,
+                                min_samples_split=9,
+                                random_state=my_random_state,
+                                max_features='sqrt',
+                                criterion='entropy')
+    rf_features = fit_and_report(estimator=rf, label='RandomForest_new', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
 
     #########################
     # XGBoost 
@@ -357,54 +369,6 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
     # }
     #########################
-    start = timeit.default_timer()
-    svm = SVC(random_state=my_random_state,
-              probability=True,
-              cache_size=1600,
-              kernel='rbf',
-              gamma='auto',
-              C=1.0,
-              max_iter=10000)
-    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
-
-    start = timeit.default_timer()
-    svm = SVC(random_state=my_random_state,
-              probability=True,
-              cache_size=1600,
-              kernel='rbf',
-              gamma='auto',
-              C=0.6,
-              max_iter=10000)
-    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_0.6', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
-
-    start = timeit.default_timer()
-    svm = SVC(random_state=my_random_state,
-              probability=True,
-              cache_size=1600,
-              kernel='rbf',
-              gamma='scale',
-              C=1.0,
-              max_iter=10000)
-    svm_features = fit_and_report(estimator=svm, label='SVM_rbf_auto_1.0', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
-
-    start = timeit.default_timer()
-    #{'C': 1.4, 'gamma': 'scale', 'kernel': 'linear'}
-    svm = SVC(random_state=my_random_state,
-              probability=True,
-              cache_size=1600,
-              kernel='linear',
-              gamma='scale',
-              C=1.4,
-              max_iter=10000)
-    svm_features = fit_and_report(estimator=svm, label='SVM_line_scale_1.4', datadict=data_std, features=my_data_std.columns, ax=ax)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)
 
     plt.show()
 
