@@ -49,26 +49,39 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
                                     importances[indices[f]]))
             arr.append([features[indices[f]], importances[indices[f]]])
 
-    y_pred = estimator.predict(x_test)
-    confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
-    # arr.append(['Confusion Matrix', str(confmat)])
-    print(confmat)
-    arr.append(['Balanced Accuracy', balanced_accuracy_score(y_test, y_pred)])
-    print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
-    arr.append(['Precision', precision_score(y_test, y_pred)])
-    print('Precision:', precision_score(y_test, y_pred))
-    arr.append(['Recall', recall_score(y_test, y_pred)])
-    print('Recall:', recall_score(y_test, y_pred))
-    arr.append(['F1', f1_score(y_test, y_pred)])
-    print('F1:', f1_score(y_test, y_pred))
-    if (not skip_predict_proba):
-        y_pred = estimator.predict_proba(x_test)[:, 1]
-        arr.append(['ROC_AUC_SCORE', roc_auc_score(y_true=y_test, y_score=y_pred)])
-        print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
+    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba))
+    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Mar_to_May'))
+    arr.append(model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct'))
+
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
     return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
+
+# pull this out to separate function to reduce code in fit_and_report
+def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=False, label=''):
+    arr = []
+
+    if label is not '':
+        print('Model metrics for ', label)
+    
+    y_pred = estimator.predict(x_test)
+    confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    arr.append(['Confusion Matrix' + label, confmat.tostring()])
+    print(confmat)
+    arr.append(['Balanced Accuracy' + label, balanced_accuracy_score(y_test, y_pred)])
+    print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
+    arr.append(['Precision' + label, precision_score(y_test, y_pred)])
+    print('Precision:', precision_score(y_test, y_pred))
+    arr.append(['Recall' + label, recall_score(y_test, y_pred)])
+    print('Recall:', recall_score(y_test, y_pred))
+    arr.append(['F1' + label, f1_score(y_test, y_pred)])
+    print('F1:', f1_score(y_test, y_pred))
+    if (not skip_predict_proba):
+        y_pred = estimator.predict_proba(x_test)[:, 1]
+        arr.append(['ROC_AUC_SCORE' + label, roc_auc_score(y_true=y_test, y_score=y_pred)])
+        print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
+    return arr
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.e4922e37-cdb5-4f8b-ae2a-bb41c11dcada"),
@@ -282,7 +295,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     plt.show()
 
-    return pd.concat([rf_features, xgb_features, svm_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features], axis=1)
+    return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features], axis=1)
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.feb3b029-23d6-45ea-90ee-cf5a0e9af33a"),
