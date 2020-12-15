@@ -303,13 +303,13 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               kernel='rbf',
               gamma='scale',
               C=1.0)
-    #svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
     plt.show()
 
-    return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features], axis=1)
+    return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features], axis=1)
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.174a93aa-187e-4fad-97eb-2bd2cf68ac7b"),
