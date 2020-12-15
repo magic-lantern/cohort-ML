@@ -397,32 +397,26 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     # Axis to combine plots
     ax = plt.gca()
 
-    #########################
-    # Logistic Regression
-    # best features from grid search {'C': 0.25, 'penalty': 'l1', 'solver': 'liblinear'}
-    # parameters = {
-    #    'penalty': ['none', 'l1', 'l2', 'elasticnet'],
-    #    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
-    #    'C': [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
-    # }
-    #########################
-    # LR penalty none: {penalty': 'none', 'solver': 'newton-cg'}
-    # penalty none ignores C and l1 ratio params, so not much to config here
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='none',
-                            random_state=my_random_state,
-                            solver='newton-cg',
-                            max_iter=10000)
-    lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='scale',
+              C=1.0)
+    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='none',
-                            random_state=my_random_state,
-                            solver='sag',
-                            max_iter=10000)
-    lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None_new', datadict=data_std, features=my_data_std.columns, ax=ax)
+    #{'C': 1.4250000000000007, 'gamma': 'auto', 'kernel': 'rbf'}
+    svm = SVC(random_state=my_random_state,
+              probability=True,
+              cache_size=1600,
+              kernel='rbf',
+              gamma='auto',
+              C=1.425)
+    svm_features = fit_and_report(estimator=svm, label='SVM_new', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
