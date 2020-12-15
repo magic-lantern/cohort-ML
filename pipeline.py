@@ -118,7 +118,9 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
     x_train_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)]
+    y_train_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)].bad_outcome
     x_test_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
+    y_test_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)].bad_outcome
 
     # figure out what from seasonal dataset are part of test
     mar_x_test_enc = mar_to_may_encoded_and_outcomes.toPandas()
@@ -136,8 +138,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     data_enc = {'x_train': x_train_enc,
                 'x_test': x_test_enc,
-                'y_train': y_train,
-                'y_test': y_test,
+                'y_train': y_train_enc,
+                'y_test': y_test_enc,
                 'mar_x_test' : mar_x_test_enc,
                 'mar_y_test': mar_y_test_enc,
                 'jun_x_test' : jun_x_test_enc,
@@ -159,8 +161,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     data_std = {'x_train': x_train_std,
                 'x_test': x_test_std,
-                'y_train': y_train,
-                'y_test': y_test,
+                'y_train': y_train_std,
+                'y_test': y_test_std,
                 'mar_x_test' : mar_x_test_std,
                 'mar_y_test': mar_y_test_std,
                 'jun_x_test' : jun_x_test_std,
