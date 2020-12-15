@@ -404,7 +404,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='scale',
               C=1.0)
-    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+    #svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -416,7 +416,7 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
               kernel='rbf',
               gamma='auto',
               C=1.425)
-    svm_features = fit_and_report(estimator=svm, label='SVM_new', datadict=data_std, features=my_data_std.columns, ax=ax)
+    #svm_features = fit_and_report(estimator=svm, label='SVM_new', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
