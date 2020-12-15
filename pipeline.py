@@ -107,7 +107,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # categoricals have been one-hot encoded, imputation done, but no scaling
     data_and_outcomes = data_encoded_and_outcomes.toPandas()
     my_data_enc = data_and_outcomes[inpatient_encoded_w_imputation.columns]
-    my_outcomes = data_and_outcomes.select(outcomes.columns).toPandas()
+    my_outcomes = data_and_outcomes[outcomes.columns]
     # this version has alredy had StandardScaler applied to the data
     # after one-hot encoding, imputation
     data_and_outcomes_std = data_scaled_and_outcomes.toPandas()
