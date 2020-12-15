@@ -421,23 +421,22 @@ def testing(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encode
     print('Time: ', stop - start)
 
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l1',
+    lr = LogisticRegression(penalty='l2',
                             C=0.25,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
-    # {'C': 0.04, 'penalty': 'l1', 'solver': 'liblinear'}
-    start = timeit.default_timer()
+    # {'C': 0.01, 'penalty': 'l2', 'solver': 'liblinear'}
     lr = LogisticRegression(penalty='l1',
                             C=0.04,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1_new', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L2_new', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
