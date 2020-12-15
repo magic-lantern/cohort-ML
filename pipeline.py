@@ -63,7 +63,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
-    return pd.DataFrame(columns=[label + '_feature', label + '_importance'], data=arr)
+    return pd.DataFrame(columns=['variable', label], data=arr)
 
 # pull this out to separate function to reduce code in fit_and_report
 def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=False, label=''):
@@ -309,7 +309,11 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     plt.show()
 
-    return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features], axis=1)
+    dfs = [rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features]
+    df_combined = reduce(lambda left,right: pd.merge(left,right,on='variable'), dfs)
+
+    #return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features], axis=1)
+    return df_combined
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.174a93aa-187e-4fad-97eb-2bd2cf68ac7b"),
