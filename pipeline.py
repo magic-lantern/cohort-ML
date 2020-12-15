@@ -115,8 +115,9 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # outcome
     y = my_outcomes.bad_outcome
     # split dataset
-    x_train_enc, x_test_enc, y_train, y_test = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
+    x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
+    # setup the train/test split with the standardized version of the dataset
     x_train_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)]
     y_train_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)].bad_outcome
     x_test_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
