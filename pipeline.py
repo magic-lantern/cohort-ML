@@ -105,13 +105,13 @@ def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=F
 def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation, mar_to_may_scaled_and_outcomes, jun_to_oct_scaled_and_outcomes, jun_to_oct_encoded_and_outcomes, mar_to_may_encoded_and_outcomes):
     # this set is for tree based methods that do not need/require scaling of the input data
     # categoricals have been one-hot encoded, imputation done, but no scaling
-    data_and_outcomes = data_encoded_and_outcomes
-    my_data_enc = data_and_outcomes.select(inpatient_encoded_w_imputation.columns).toPandas()
+    data_and_outcomes = data_encoded_and_outcomes.toPandas()
+    my_data_enc = data_and_outcomes[inpatient_encoded_w_imputation.columns]
     my_outcomes = data_and_outcomes.select(outcomes.columns).toPandas()
     # this version has alredy had StandardScaler applied to the data
     # after one-hot encoding, imputation
-    data_and_outcomes_std = data_scaled_and_outcomes
-    my_data_std = data_and_outcomes_std.select(inpatient_scaled_w_imputation.columns).toPandas()
+    data_and_outcomes_std = data_scaled_and_outcomes.toPandas()
+    my_data_std = data_and_outcomes_std[inpatient_scaled_w_imputation.columns]
     # outcome
     y = my_outcomes.bad_outcome
     # split dataset
