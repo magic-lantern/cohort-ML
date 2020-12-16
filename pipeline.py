@@ -235,7 +235,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='newton-cg',
                             max_iter=10000)
-    #lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
