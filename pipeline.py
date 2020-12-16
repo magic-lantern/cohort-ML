@@ -403,25 +403,24 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
     # Axis to combine plots
     ax = plt.gca()
 
-    # LR L2: {'C': 0.25, 'penalty': 'l2', 'solver': 'liblinear'}
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l2',
-                            random_state=my_random_state,
+    lr = LogisticRegression(penalty='l1',
                             C=0.25,
+                            random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1_orig', datadict=data_std, features=my_data_std.columns, ax=ax)
     print('Time: ', stop - start)
 
-    #{'C': 0.0035, 'penalty': 'l2', 'solver': 'liblinear'}
+    #{'C': 0.256, 'penalty': 'l1', 'solver': 'liblinear'}
     start = timeit.default_timer()
-    lr = LogisticRegression(penalty='l2',
+    lr = LogisticRegression(penalty='l1',
                             random_state=my_random_state,
-                            C=0.0035,
+                            C=0.0255,
                             solver='liblinear',
                             max_iter=10000)
-    lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2_new', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1_new', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
