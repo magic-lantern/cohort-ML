@@ -53,7 +53,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
             print("%2d) %-*s %f" % (f + 1, 40, 
                                     features[indices[f]], 
                                     importances[indices[f]]))
-            arr.append([features[indices[f]], importances[indices[f], f]])
+            arr.append([features[indices[f]], importances[indices[f]], f])
     print(arr)
     arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba)
     if (mar_x_test is not None):
