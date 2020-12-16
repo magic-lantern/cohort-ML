@@ -77,17 +77,17 @@ def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=F
     confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
     #arr.append(['Confusion Matrix' + label, confmat.tostring()])
     print(confmat)
-    arr.append(['z_Balanced Accuracy' + label, balanced_accuracy_score(y_test, y_pred), None])
+    arr.append(['z_Balanced Accuracy' + label, balanced_accuracy_score(y_test, y_pred), np.NaN])
     print('Balanced Accuracy:', balanced_accuracy_score(y_test, y_pred))
-    arr.append(['z_Precision' + label, precision_score(y_test, y_pred), None])
+    arr.append(['z_Precision' + label, precision_score(y_test, y_pred), np.NaN])
     print('Precision:', precision_score(y_test, y_pred))
-    arr.append(['z_Recall' + label, recall_score(y_test, y_pred), None])
+    arr.append(['z_Recall' + label, recall_score(y_test, y_pred), np.NaN])
     print('Recall:', recall_score(y_test, y_pred))
-    arr.append(['z_F1' + label, f1_score(y_test, y_pred), None])
+    arr.append(['z_F1' + label, f1_score(y_test, y_pred), np.NaN])
     print('F1:', f1_score(y_test, y_pred))
     if (not skip_predict_proba):
         y_pred = estimator.predict_proba(x_test)[:, 1]
-        arr.append(['z_ROC_AUC_SCORE' + label, roc_auc_score(y_true=y_test, y_score=y_pred), None])
+        arr.append(['z_ROC_AUC_SCORE' + label, roc_auc_score(y_true=y_test, y_score=y_pred), np.NaN])
         print('ROC_AUC_SCORE: ', roc_auc_score(y_true=y_test, y_score=y_pred))
     return arr
 
