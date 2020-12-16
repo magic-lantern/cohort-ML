@@ -315,7 +315,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     df_combined = reduce(lambda left,right: pd.merge(left,right,on='variable',how='outer'), dfs)
     print(df_combined.head())
     #return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features], axis=1)
-    return return
+    return
 
 @transform_pandas(
     Output(rid="ri.foundry.main.dataset.9e3c22ec-1a47-4bfa-bace-028a54a1c685"),
