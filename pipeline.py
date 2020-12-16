@@ -245,7 +245,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
-    #lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l1_features = fit_and_report(estimator=lr, label='LogisticRegression_L1', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -256,7 +256,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             C=0.25,
                             solver='liblinear',
                             max_iter=10000)
-    #lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
+    lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -268,7 +268,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                             l1_ratio=0.45,
                             solver='saga',
                             max_iter=10000)
-    #lr_elastic_features = fit_and_report(estimator=lr, label='LogisticRegression_Elasticnet', datadict=data_std, features=my_data_std.columns)
+    lr_elastic_features = fit_and_report(estimator=lr, label='LogisticRegression_Elasticnet', datadict=data_std, features=my_data_std.columns)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -284,7 +284,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                          alpha=0.7,
                          solver='sparse_cg',
                          class_weight='balanced')
-    #rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -304,14 +304,14 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               kernel='rbf',
               gamma='scale',
               C=1.0)
-    #svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
+    svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
     plt.show()
 
-    dfs = [rf_features, xgb_features, lr_none_features]#, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features]
-    df_combined = reduce(lambda left,right: pd.merge(left,right,on='variable'), dfs)
+    dfs = [rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features]
+    df_combined = reduce(lambda left,right: pd.merge(left,right,on='variable',how='outer'), dfs)
 
     #return pd.concat([rf_features, xgb_features, lr_none_features, lr_l1_features, lr_l2_features, lr_elastic_features, rc_features, svm_features], axis=1)
     return df_combined
