@@ -408,7 +408,7 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
                          alpha=0.7,
                          solver='sparse_cg',
                          class_weight='balanced')
-    #rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
@@ -418,7 +418,7 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
                          alpha=0.2,
                          solver='svd',
                          class_weight='balanced')
-    #rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
+    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier_new', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
