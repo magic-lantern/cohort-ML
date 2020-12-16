@@ -314,6 +314,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     df_combined = reduce(lambda left,right: pd.merge(left,right,on='variable',how='outer'), dfs)
     # any columns that are all null should be dropped
     df_combined = df_combined.dropna(axis='columns', how='all')
+    print(df_combined.columns)
     print(df_combined.head())
     return df_combined
 
