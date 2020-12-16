@@ -53,7 +53,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
             print("%2d) %-*s %f" % (f + 1, 40, 
                                     features[indices[f]], 
                                     importances[indices[f]]))
-            arr.append([features[indices[f]], importances[indices[f]]])
+            arr.append([features[indices[f]], importances[indices[f], f]])
     print(arr)
     arr = arr + model_metrics(estimator, x_test, y_test, skip_predict_proba=skip_predict_proba)
     if (mar_x_test is not None):
@@ -64,7 +64,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
     print('------------------------------------')
-    return pd.DataFrame(columns=['variable', label], data=arr).sort_values('variable')
+    return pd.DataFrame(columns=['variable', label, label + '_feature_rank'], data=arr).sort_values('variable')
 
 # pull this out to separate function to reduce code in fit_and_report
 def model_metrics(estimator=None, x_test=None, y_test=None, skip_predict_proba=False, label=''):
