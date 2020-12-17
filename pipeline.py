@@ -319,6 +319,93 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     return df_combined
 
 @transform_pandas(
+    Output(rid="ri.vector.main.execute.737ddbae-e975-4dd0-9ad4-dba1c4186c78"),
+    inpatient_ml_dataset=Input(rid="ri.foundry.main.dataset.07927bca-b175-4775-9c55-a371af481cc1")
+)
+def inpatient_encoded(inpatient_ml_dataset):
+    inpatient_ml_dataset = inpatient_ml_dataset
+    # get rid of ids, columns that are duplicates of other information,
+    # or columns that are from the end of stay
+    sdf = inpatient_ml_dataset
+    sdf = sdf.drop('covid_status_name')
+    sdf = sdf.drop('person_id')
+    sdf = sdf.drop('visit_concept_id')
+    sdf = sdf.drop('visit_concept_name')
+    sdf = sdf.drop('in_death_table')
+    sdf = sdf.drop('severity_type')
+    sdf = sdf.drop('length_of_stay')
+    sdf = sdf.drop('ecmo')
+    sdf = sdf.drop('aki_in_hospital')
+    sdf = sdf.drop('invasive_ventilation')
+    sdf = sdf.drop('testcount')
+    sdf = sdf.drop('bad_outcome')
+    # before this have filtered to patients affected by COVID
+    sdf = sdf.drop('positive_covid_test', 'negative_covid_test', 'suspected_covid')
+
+    # these columns are 85% or greater NULL (insurance information)
+    sdf = sdf.drop('miscellaneous_program', 'department_of_corrections', 'department_of_defense', 'other_government_federal_state_local_excluding_department_of_corrections', 'no_payment_from_an_organization_agency_program_private_payer_listed', 'medicaid', 'private_health_insurance', 'medicare', 'payer_no_matching_concept')
+    # these ones are 100% present, but real values are rare
+    sdf = sdf.drop('smoking_status') # only 0.2% have smoking
+    sdf = sdf.drop('blood_type')     # only 9% have a value besides unknown
+    
+    df = sdf.toPandas()
+
+    # actually decided that these columns are 'cheating'
+    # fixing columns so they work with sklearn
+    # df['visit_start'] = pd.to_datetime(df.visit_start_date).astype('int64')
+    # df['visit_end'] = pd.to_datetime(df.visit_end_date).astype('int64')
+    df = df.drop(columns=['visit_start_date', 'visit_end_date'])
+    
+    # remove site so analysis is more generalized across all COVID positive
+    # df = pd.concat([df, pd.get_dummies(df.data_partner_id, prefix='site', drop_first=True)], axis=1)
+    df = pd.concat([df.drop('gender_concept_name', axis=1), pd.get_dummies(df.gender_concept_name, prefix='gender', drop_first=True)], axis=1)
+    df = pd.concat([df.drop('race', axis=1), pd.get_dummies(df.race, prefix='race', drop_first=True)], axis=1)
+    df = pd.concat([df.drop('ethnicity', axis=1), pd.get_dummies(df.ethnicity, prefix='ethnicity', drop_first=True)], axis=1)
+    #df = pd.concat([df.drop('smoking_status', axis=1), pd.get_dummies(df.smoking_status, prefix='smoking', drop_first=True)], axis=1)
+    #df = pd.concat([df.drop('blood_type', axis=1), pd.get_dummies(df.blood_type, prefix='blood_type', drop_first=True)], axis=1)
+    #df = pd.concat([df.drop('severity_type', axis=1), pd.get_dummies(df.severity_type, prefix='severity', drop_first=True)], axis=1)
+
+    # these boolean coluumns aren't being treated as boolean
+    charlson_cols = ['chf', 'cancer', 'dm', 'dmcx', 'dementia', 'hiv', 'livermild', 'liversevere', 'mi', 'mets', 'pud', 'pvd', 'paralysis', 'pulmonary', 'renal', 'rheumatic', 'stroke']
+    df[charlson_cols] = df[charlson_cols].astype('bool')
+
+    df.columns = df.columns.str.replace(' ', '_')
+    df.columns = df.columns.str.replace('/', '_')
+    df.columns = df.columns.str.lower()
+    
+    return df
+    
+
+@transform_pandas(
+    Output(rid="ri.vector.main.execute.1ce10b4d-a713-4b8f-a623-8f7e6edac75f"),
+    inpatient_encoded=Input(rid="ri.vector.main.execute.737ddbae-e975-4dd0-9ad4-dba1c4186c78")
+)
+def inpatient_encoded_w_imputation_1(inpatient_encoded):
+    df = inpatient_encoded
+    # remove data_partner_id as it was kept for viewing missing data by site. Not part of the rest of this analysis pipeline
+    df = df.drop(columns='data_partner_id')
+
+    df['bnp_pg_ml'] = df['bnp_pg_ml'].fillna(100)
+    df['c-reactive_protein_crp_mg_l'] = df['c-reactive_protein_crp_mg_l'].fillna(10)
+    df['erythrocyte_sed_rate_mm_hr'] = df['erythrocyte_sed_rate_mm_hr'].fillna(19)
+    df['lactate_mm'] = df['lactate_mm'].fillna(13.5)
+    df['nt_pro_bnp_pg_ml'] = df['nt_pro_bnp_pg_ml'].fillna(125)
+    df['procalcitonin_ng_ml'] = df['procalcitonin_ng_ml'].fillna(0.02)
+    df['troponin_all_types_ng_ml'] = df['troponin_all_types_ng_ml'].fillna(0.02)
+
+    df.loc[(df.gender_male == True) & (df.ferritin_ng_ml.isna()), 'ferritin_ng_ml'] = 150
+    df.loc[(df.gender_male == False) & (df.gender_other == False) & (df.ferritin_ng_ml.isna()), 'ferritin_ng_ml'] = 75
+    
+    # fill these with False - now dropped due to already dropping other insurance info
+    # df['medicare'] = df['medicare'].fillna(False)
+    # df['payer_no_matching_concept'] = df['payer_no_matching_concept'].fillna(False)
+
+    # now fill the rest with the median
+    df = df.fillna(df.median())
+
+    return df
+
+@transform_pandas(
     Output(rid="ri.foundry.main.dataset.9e3c22ec-1a47-4bfa-bace-028a54a1c685"),
     data_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.32069249-a675-4faf-9d3c-a68ff0670c07"),
     data_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.b474df3d-909d-4a81-9e38-515e22b9cff3"),
