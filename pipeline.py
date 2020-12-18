@@ -451,5 +451,5 @@ def train_set_ids( data_encoded_and_outcomes, outcomes, inpatient_encoded_w_impu
     # split dataset
     x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
-    return x_train_enc.visit_occurrence_id
+    return x_train_enc.visit_occurrence_id.to_frame()
 
