@@ -328,7 +328,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     train_set_ids=Input(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff")
 )
 def missing_data_info( inpatient_ml_dataset, train_set_ids):
-    ids = train_set_ids.toPandas()
+    ids = train_set_ids
     temp_df = inpatient_ml_dataset.toPandas()
     df = pd.merge(temp_df, ids, how='inner', on='visit_occurrence_id')
     missing_df = df.isnull().sum().to_frame()
