@@ -333,6 +333,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     mar_to_may_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.c0fd81e6-dc02-45b9-93fe-b0047394e4f8"),
     outcomes=Input(rid="ri.foundry.main.dataset.349f1404-e60e-4a76-9a32-13fe06198cc1")
 )
+@output_image_type('svg')
 def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation, mar_to_may_scaled_and_outcomes, jun_to_oct_scaled_and_outcomes, jun_to_oct_encoded_and_outcomes, mar_to_may_encoded_and_outcomes):
     inpatient_scaled_w_imputation = inpatient_scaled_w_imputation
     inpatient_encoded_w_imputation = inpatient_encoded_w_imputation
