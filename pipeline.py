@@ -323,6 +323,22 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     return df_combined
 
 @transform_pandas(
+    Output(rid="ri.vector.main.execute.870d94b9-298f-4d9c-8fdb-b6f6befca2da"),
+    train_set_ids=Input(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff")
+)
+def missing_data_info(train_set_ids):
+    def missing_data_info(inpatient_encoded):
+    df = inpatient_encoded
+    missing_df = df.isnull().sum().to_frame()
+    missing_df = missing_df.rename(columns = {0:'null_count'})
+    missing_df['pct_missing'] = missing_df['null_count'] / df.shape[0]
+    missing_df['pct_present'] = round((1 - missing_df['null_count'] / df.shape[0]) * 100, 1)
+    missing_df = missing_df.reset_index()
+    missing_df = missing_df.rename(columns = {'index':'variable'})
+    missing_df = missing_df.sort_values('pct_missing', ascending=False)
+    return missing_df
+
+@transform_pandas(
     Output(rid="ri.foundry.main.dataset.9e3c22ec-1a47-4bfa-bace-028a54a1c685"),
     data_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.32069249-a675-4faf-9d3c-a68ff0670c07"),
     data_scaled_and_outcomes=Input(rid="ri.foundry.main.dataset.b474df3d-909d-4a81-9e38-515e22b9cff3"),
@@ -452,11 +468,4 @@ def train_set_ids( data_encoded_and_outcomes, outcomes, inpatient_encoded_w_impu
     x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
     return x_train_enc.visit_occurrence_id.to_frame()
-
-@transform_pandas(
-    Output(rid="ri.vector.main.execute.870d94b9-298f-4d9c-8fdb-b6f6befca2da"),
-    train_set_ids=Input(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff")
-)
-def unnamed(train_set_ids):
-    
 
