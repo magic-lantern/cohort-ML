@@ -435,21 +435,21 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
     return
 
 @transform_pandas(
-    Output(rid="ri.vector.main.execute.4854f46c-50a6-4bf1-8065-02b4869401b1"),
+    Output(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff"),
     data_encoded_and_outcomes=Input(rid="ri.foundry.main.dataset.32069249-a675-4faf-9d3c-a68ff0670c07"),
     inpatient_encoded_w_imputation=Input(rid="ri.foundry.main.dataset.02362acb-3a3b-4fd6-ad35-677c93bd57da"),
     outcomes=Input(rid="ri.foundry.main.dataset.349f1404-e60e-4a76-9a32-13fe06198cc1")
 )
-def train_set( data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation):
+def train_set_ids( data_encoded_and_outcomes, outcomes, inpatient_encoded_w_imputation):
     # this set is for tree based methods that do not need/require scaling of the input data
     # categoricals have been one-hot encoded, imputation done, but no scaling
-data_and_outcomes = data_encoded_and_outcomes.toPandas()
-my_data_enc = data_and_outcomes[inpatient_encoded_w_imputation.columns]
-my_outcomes = data_and_outcomes[outcomes.columns]
-# outcome
-y = my_outcomes.bad_outcome
-# split dataset
-x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
+    data_and_outcomes = data_encoded_and_outcomes.toPandas()
+    my_data_enc = data_and_outcomes[inpatient_encoded_w_imputation.columns]
+    my_outcomes = data_and_outcomes[outcomes.columns]
+    # outcome
+    y = my_outcomes.bad_outcome
+    # split dataset
+    x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
-    return x_train_enc
+    return x_train_enc.visit_occurrence_id
 
