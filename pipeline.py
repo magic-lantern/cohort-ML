@@ -323,12 +323,14 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     return df_combined
 
 @transform_pandas(
-    Output(rid="ri.vector.main.execute.870d94b9-298f-4d9c-8fdb-b6f6befca2da"),
+    Output(rid="ri.foundry.main.dataset.e34bb48d-ba26-4339-abe4-4c4f6b386e3a"),
+    inpatient_ml_dataset=Input(rid="ri.foundry.main.dataset.07927bca-b175-4775-9c55-a371af481cc1"),
     train_set_ids=Input(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff")
 )
-def missing_data_info(train_set_ids):
-    def missing_data_info(inpatient_encoded):
-    df = inpatient_encoded
+def missing_data_info( inpatient_ml_dataset, train_set_ids):
+    ids = train_set_ids.toPandas()
+    temp_df = inpatient_ml_dataset.toPandas()
+    df = pd.merge(temp_df, ids, how='inner', on='visit_occurrence_id')
     missing_df = df.isnull().sum().to_frame()
     missing_df = missing_df.rename(columns = {0:'null_count'})
     missing_df['pct_missing'] = missing_df['null_count'] / df.shape[0]
