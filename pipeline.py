@@ -237,7 +237,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='none',
                             random_state=my_random_state,
-                            solver='newton-cg',
+                            #solver='newton-cg',
+                            solver='lbfgs',
                             max_iter=10000)
     lr_none_features = fit_and_report(estimator=lr, label='LogisticRegression_None', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
@@ -245,7 +246,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
 
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l1',
-                            C=0.25,
+                            C=0.0285,
+                            #C=0.25,
                             random_state=my_random_state,
                             solver='liblinear',
                             max_iter=10000)
@@ -257,7 +259,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     start = timeit.default_timer()
     lr = LogisticRegression(penalty='l2',
                             random_state=my_random_state,
-                            C=0.25,
+                            #C=0.25,
+                            C=0.0035,
                             solver='liblinear',
                             max_iter=10000)
     lr_l2_features = fit_and_report(estimator=lr, label='LogisticRegression_L2', datadict=data_std, features=my_data_std.columns, ax=ax)
