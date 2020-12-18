@@ -453,3 +453,10 @@ def train_set_ids( data_encoded_and_outcomes, outcomes, inpatient_encoded_w_impu
 
     return x_train_enc.visit_occurrence_id.to_frame()
 
+@transform_pandas(
+    Output(rid="ri.vector.main.execute.870d94b9-298f-4d9c-8fdb-b6f6befca2da"),
+    train_set_ids=Input(rid="ri.foundry.main.dataset.b82f46a8-82f0-4fce-a924-a6afc70475ff")
+)
+def unnamed(train_set_ids):
+    
+
