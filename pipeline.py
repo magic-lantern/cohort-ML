@@ -307,7 +307,7 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
               cache_size=1600,
               kernel='rbf',
               gamma='scale',
-              C=1.0)
+              C=0.430)
     svm_features = fit_and_report(estimator=svm, label='SVM', datadict=data_std, features=my_data_std.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
