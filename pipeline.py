@@ -430,22 +430,38 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
     # Axis to combine plots
     ax = plt.gca()
 
-    start = timeit.default_timer()
-    rc = RidgeClassifier(random_state=my_random_state,
-                         alpha=0.7,
-                         solver='sparse_cg',
-                         class_weight='balanced')
-    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True, ax=ax)
+        start = timeit.default_timer()
+    xgb_model = xgb.XGBClassifier(n_jobs=8, # parallelization
+                                  use_label_encoder=False,
+                                  random_state=my_random_state,
+                                  booster='gbtree',
+                                  learning_rate=0.0385,
+                                  n_estimators=500)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_curr', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
-    #{'alpha': 0.16899999999999987, 'solver': 'svd'}
+    #{'booster': 'gbtree', 'learning_rate': 0.01, 'n_estimators': 1100}
     start = timeit.default_timer()
-    rc = RidgeClassifier(random_state=my_random_state,
-                         alpha=0.169,
-                         solver='svd',
-                         class_weight='balanced')
-    rc_features = fit_and_report(estimator=rc, label='RidgeClassifier_new', datadict=data_std, features=my_data_std.columns, skip_predict_proba=True, ax=ax)
+    xgb_model = xgb.XGBClassifier(n_jobs=8, # parallelization
+                                  use_label_encoder=False,
+                                  random_state=my_random_state,
+                                  booster='gbtree',
+                                  learning_rate=0.01,
+                                  n_estimators=1100)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1100', datadict=data_enc, features=my_data_enc.columns, ax=ax)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+
+    #{'booster': 'gbtree', 'learning_rate': 0.0085, 'n_estimators': 1150}
+    start = timeit.default_timer()
+    xgb_model = xgb.XGBClassifier(n_jobs=8, # parallelization
+                                  use_label_encoder=False,
+                                  random_state=my_random_state,
+                                  booster='gbtree',
+                                  learning_rate=0.0085,
+                                  n_estimators=1150)
+    xgb_features = fit_and_report(estimator=xgb_model, label='XGBoost_1150', datadict=data_enc, features=my_data_enc.columns, ax=ax)
     stop = timeit.default_timer()
     print('Time: ', stop - start)
 
