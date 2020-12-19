@@ -430,7 +430,7 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
     # Axis to combine plots
     ax = plt.gca()
 
-        start = timeit.default_timer()
+    start = timeit.default_timer()
     xgb_model = xgb.XGBClassifier(n_jobs=8, # parallelization
                                   use_label_encoder=False,
                                   random_state=my_random_state,
