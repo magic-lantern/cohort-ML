@@ -35,12 +35,13 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
 
     estimator.fit(x_train, y_train)
 
+    print(label, '------------------------------------')
+
     # estimate model performance range by 5 fold cross validation of training set
     scores = cross_val_score(estimator, x_train, y_train, cv=5, scoring='roc_auc')
     print(scores)
-    print("%0.2f roc_auc with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
+    print("mean %0.2f roc_auc with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
 
-    print(label, '------------------------------------')
     # summarize the selection of the attributes
     if hasattr(estimator, 'feature_importances_'):
         importances = estimator.feature_importances_
