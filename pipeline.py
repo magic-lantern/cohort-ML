@@ -70,7 +70,8 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
 
     for r in region.region.unique():
         # filter x_test for region
-        filtered_x_test = x_test.join(region[region.region==r], how='inner')
+        # filtered_x_test = x_test.join(region[region.region==r], how='inner')
+        filtered_x_test = x_test[x_test.index.isin(region[region.region==r].index)]
         print(r, ' - len of filtered_x_test:', len(filtered_x_test))
         # filter y_test for region
         filtered_y_test = y_test[y_test.index.isin(filtered_x_test.index)]
