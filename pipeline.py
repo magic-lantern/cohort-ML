@@ -77,7 +77,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
         print(r, ' - len of filtered_y_test:', len(filtered_y_test))
         region_label = region.replace(' ', '_')
         # now generate stats for this region
-        arr = arr + model_metrics(estimator, filtered_x_test, filtered_y_test, skip_predict_proba=skip_predict_proba, label='_' + r)
+        arr = arr + model_metrics(estimator, filtered_x_test, filtered_y_test, skip_predict_proba=skip_predict_proba, label='_' + region_label)
 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
