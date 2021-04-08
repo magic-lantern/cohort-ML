@@ -23,7 +23,7 @@ import xgboost as xgb
 # set standard random state for repeatability
 my_random_state = 42
 
-def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, skip_predict_proba=False, region=None):
+def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, skip_predict_proba=False):
     x_test = datadict.get('x_test')
     y_test = datadict.get('y_test')
     x_train = datadict.get('x_train')
@@ -68,17 +68,18 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
     if (jun_x_test is not None):
         arr = arr + model_metrics(estimator, jun_x_test, jun_y_test, skip_predict_proba=skip_predict_proba, label='_Jun_to_Oct')
 
-    for r in region.region.unique():
-        # filter x_test for region
-        # filtered_x_test = x_test.join(region[region.region==r], how='inner')
-        filtered_x_test = x_test[x_test.index.isin(region[region.region==r].index)]
-        print(r, ' - len of filtered_x_test:', len(filtered_x_test))
-        # filter y_test for region
-        filtered_y_test = y_test[y_test.index.isin(filtered_x_test.index)]
-        print(r, ' - len of filtered_y_test:', len(filtered_y_test))
-        region_label = r.replace(' ', '_')
-        # now generate stats for this region
-        arr = arr + model_metrics(estimator, filtered_x_test, filtered_y_test, skip_predict_proba=skip_predict_proba, label='_' + region_label)
+    if (region is not None):
+        for r in region.region.unique():
+            # filter x_test for region
+            # filtered_x_test = x_test.join(region[region.region==r], how='inner')
+            filtered_x_test = x_test[x_test.index.isin(region[region.region==r].index)]
+            print(r, ' - len of filtered_x_test:', len(filtered_x_test))
+            # filter y_test for region
+            filtered_y_test = y_test[y_test.index.isin(filtered_x_test.index)]
+            print(r, ' - len of filtered_y_test:', len(filtered_y_test))
+            region_label = r.replace(' ', '_')
+            # now generate stats for this region
+            arr = arr + model_metrics(estimator, filtered_x_test, filtered_y_test, skip_predict_proba=skip_predict_proba, label='_' + region_label)
 
     if ax is not None:
         plot_roc_curve(estimator, x_test, y_test, name=label, ax=ax)
@@ -138,6 +139,10 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
     # split dataset
     x_train_enc, x_test_enc, y_train_enc, y_test_enc = train_test_split(my_data_enc, y, test_size=0.3, random_state=my_random_state, stratify=y)
 
+    # regional information - will use index later to join and filter
+    region_enc = data_and_outcomes[data_and_outcomes.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)][['region']]
+    region_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)][['region']]
+
     # setup the train/test split with the standardized version of the dataset
     x_train_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)]
     y_train_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)].bad_outcome
@@ -165,7 +170,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                 'mar_x_test' : mar_x_test_enc,
                 'mar_y_test': mar_y_test_enc,
                 'jun_x_test' : jun_x_test_enc,
-                'jun_y_test': jun_y_test_enc}
+                'jun_y_test': jun_y_test_enc,
+                'region': region_enc}
 
     # figure out what from seasonal dataset are part of test data that has been standardized
     mar_x_test_std = mar_to_may_scaled_and_outcomes.toPandas()
@@ -188,7 +194,8 @@ def generate_models_and_summary_info(data_scaled_and_outcomes, inpatient_scaled_
                 'mar_x_test' : mar_x_test_std,
                 'mar_y_test': mar_y_test_std,
                 'jun_x_test' : jun_x_test_std,
-                'jun_y_test': jun_y_test_std}
+                'jun_y_test': jun_y_test_std,
+                'region': region_std}
 
     # drop columns to match x_ arrays
     my_data_enc = my_data_enc.drop(columns='visit_occurrence_id')
@@ -399,9 +406,6 @@ def model_compare(data_scaled_and_outcomes, inpatient_scaled_w_imputation, data_
     y_train_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_train_enc.visit_occurrence_id)].bad_outcome
     x_test_std = my_data_std[my_data_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)]
     y_test_std = data_and_outcomes_std[data_and_outcomes_std.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)].bad_outcome
-
-    # regional information - will use index later to join and filter
-    region_enc = data_and_outcomes[data_and_outcomes.visit_occurrence_id.isin(x_test_enc.visit_occurrence_id)][['region']]
 
     # figure out what from seasonal dataset are part of test
     mar_x_test_enc = mar_to_may_encoded_and_outcomes.toPandas()
