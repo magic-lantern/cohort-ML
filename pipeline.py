@@ -73,7 +73,7 @@ def fit_and_report(estimator=None, label='', datadict={}, features=[], ax=None, 
         filtered_x_test = x_test.join(region[region.region==r], how='inner')
         print(r, ' - len of filtered_x_test:', len(filtered_x_test))
         # filter y_test for region
-        filtered_y_test = y_test.join(how='inner')
+        filtered_y_test = y_test[y_test.index.isin(filtered_x_test.index)]
         print(r, ' - len of filtered_y_test:', len(filtered_y_test))
         # now generate stats for this region
         arr = arr + model_metrics(estimator, filtered_x_test, filtered_y_test, skip_predict_proba=skip_predict_proba, label='_' + r)
